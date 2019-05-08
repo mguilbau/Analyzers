@@ -53,7 +53,7 @@ main(int argc, char** argv) {
         parser.add<int>("harmonicorder1", '\0', "harmonic order", false, 2);
 	parser.add<int>("nevents"       , '\0', "Number of events to be analyzed", false, -1);
 	parser.add<int>("subevt"        , '\0', "Number of sub-events", false, 1);
-	parser.add<int>("nsubsample"    , '\0', "Number of sub-sample for error calculation", false, 10);
+	parser.add<int>("nsubsample"    , '\0', "Number of sub-sample for error calculation", false, 20);
 	parser.add("process"            , '\0', "process TTree");
 	parser.add("jacknife"           , '\0', "compute error with jacknife");
 	parser.add("jacksub"            , '\0', "compute error with jacknife and subsample");
@@ -93,8 +93,7 @@ main(int argc, char** argv) {
         //int binarray[] = {0,   10,  20,  30,  40,  50, 60, 70, 80, 90, 100, 110,
         //                  120, 150, 185, 190, 220, 250, 
         //                  300, 320, 350, 800};
-        int binarray[] = {0,   10,  20,  40, 80, 
-                          120, 150, 185, 250, 350, 800};
+        int binarray[] = {0, 185, 250, 350, 800};
 
 //int binarray[] = {0,10,20,30,40,50,60,70,80};
 

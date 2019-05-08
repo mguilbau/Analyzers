@@ -419,18 +419,19 @@ namespace jacknife
       LOG_S(INFO) << "Number of trees in the TChain: " << ch->GetNtrees();
       LOG_S(INFO) << "Maximum cumulant order to be computed: " << cumumaxorder;
 
-      //int nbranches = ch->GetNbranches();
-      int nbranches = 10;
+      //int nbranches = ch->GetNbranches() - 4;
+      int nbranches = SetupBranchName(harm0, harm1, nsub).size();
+      //int nbranches = 10;
       LOG_S(INFO) << "Number of branches in TTrees: "<< nbranches;
 
       //init vectors
       //  -- 2D vector correlator (numerator and denominator)
       std::vector < std::vector< std::vector<double> > >  
-      qNM( nbranches / 2,
+      qNM( nbranches,
            std::vector< std::vector<double> > ( binarray[nbins], 
                                                 std::vector<double>(multmax, 0.) ) );
       std::vector < std::vector< std::vector<double> > >  
-      wqNM( nbranches / 2,
+      wqNM( nbranches,
             std::vector< std::vector<double> > ( binarray[nbins], 
                                                  std::vector<double>(multmax, 0.) ) );
 

@@ -3,7 +3,7 @@
 IN_DIR="/afs/cern.ch/user/m/mguilbau/AnalyzerForWei/CMSSW_8_0_24/src"
 MACRO_DIR="Analyzers/Cumulants/macro"
 INCLUDE_DIR="Analyzers/Cumulants/interface"
-OUT_DIR="/eos/cms/store/user/mguilbau/cumulant/c2_hm_160217"
+OUT_DIR="/eos/cms/store/user/mguilbau/cumulant/c2_hm_jack"
 
 HM=$1
 multmin=$2
@@ -13,6 +13,7 @@ trg=$5
 harm0=$6
 harm1=$7
 folder=$8
+version=$9
 if test -z "$HM"; then
   echo "Usage as: "
   echo "  - 1st argument: HM HLT PATH number [HM]"
@@ -47,6 +48,7 @@ if test -z "$multmax"; then
   echo "  - 6th argument: 1st harmonic [harm0]"
   echo "  - 7th argument: 2nd harmonic [harm1]"
   echo "  - 8th argument: folder name [folder]"
+  echo "  - 9th argument: version [version]"
  exit 123;
 fi
 if test -z "$subevt"; then
@@ -132,22 +134,27 @@ echo "Content of tmp dir folder: "
 echo $tdir
 ls $tdir
 
-fname="c${harm0}${harm1}_vnm_PD${HM}_HM${trg}_${multmin}_${multmax}_nsub${subevt}.root"
+fname="c${harm0}${harm1}_v2_PD${HM}_HM${trg}_${multmin}_${multmax}_nsub${subevt}.root"
 if [ ${subevt} -eq 1 ] 
 then
-  macro/PlotVnm --input "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumu18/PAHigh*/*${trg}*std*c2*/*/*/*.root" --noffmin ${multmin} --noffmax ${multmax} --subevt ${subevt} --output ${fname} --harmonicorder0 ${harm0} --harmonicorder1 ${harm1} --folder ${folder} --process --jacknife
+  ls "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumuNew/PAHighMultiplicity*/*${trg}*std_c2_v12/*/*/*.root" 
+  macro/PlotVnm --input "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumuNew/PAHighMultiplicity*/*${trg}*std*_c2_v12/*/*/*.root" --noffmin ${multmin} --noffmax ${multmax} --subevt ${subevt} --output ${fname} --harmonicorder0 ${harm0} --harmonicorder1 ${harm1} --folder ${folder} --cumumaxorder 8 --process --jacknife
 elif [ ${subevt} -eq 2 ]
 then
-  macro/PlotVnm --input "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumu/PAHighMultiplicity*/*${trg}*_${subevt}sub*c2*v11/*/*/*.root" --noffmin ${multmin} --noffmax ${multmax} --subevt ${subevt} --output ${fname} --harmonicorder0 ${harm0} --harmonicorder1 ${harm1} --folder ${folder} --process --jacknife
+  ls "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumuNew/PAHighMultiplicity*/*${trg}*${subevt}sub_c2_v12/*/*/*.root" 
+  macro/PlotVnm --input "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumuNew/PAHighMultiplicity*/*${trg}*${subevt}sub*_c2_v12/*/*/*.root" --noffmin ${multmin} --noffmax ${multmax} --subevt ${subevt} --output ${fname} --harmonicorder0 ${harm0} --harmonicorder1 ${harm1} --folder ${folder} --cumumaxorder 8 --process --jacknife
 elif [ ${subevt} -eq 3 ]
 then
-  macro/PlotVnm --input "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumu/PAHighMultiplicity*/*${trg}*_${subevt}sub*v11/*/*/*c2*.root" --noffmin ${multmin} --noffmax ${multmax} --subevt ${subevt} --output ${fname} --harmonicorder0 ${harm0} --harmonicorder1 ${harm1} --folder ${folder} --process --jacknife
+  ls "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumuNew/PAHighMultiplicity*/*${trg}*${subevt}sub_c2_v12/*/*/*.root" 
+  macro/PlotVnm --input "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumuNew/PAHighMultiplicity*/*${trg}*_${subevt}sub*_c2_v12/*/*/*.root" --noffmin ${multmin} --noffmax ${multmax} --subevt ${subevt} --output ${fname} --harmonicorder0 ${harm0} --harmonicorder1 ${harm1} --folder ${folder} --cumumaxorder 8 --process --jacknife
 elif [ ${subevt} -eq 4 ]
 then
-  macro/PlotVnm --input "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumu/PAHighMultiplicity*/*${trg}*_${subevt}sub*c2*v11/*/*/*.root" --noffmin ${multmin} --noffmax ${multmax} --subevt ${subevt} --output ${fname} --harmonicorder0 ${harm0} --harmonicorder1 ${harm1} --folder ${folder} --process --jacknife
+  ls "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumuNew/PAHighMultiplicity*/*${trg}*${subevt}sub_c2_v12/*/*/*.root" 
+  macro/PlotVnm --input "/eos/cms/store/group/phys_heavyions/flowcorr/SubCumuNew/PAHighMultiplicity*/*${trg}*${subevt}sub*_c2_v12/*/*/*.root" --noffmin ${multmin} --noffmax ${multmax} --subevt ${subevt} --output ${fname} --harmonicorder0 ${harm0} --harmonicorder1 ${harm1} --folder ${folder} --cumumaxorder 8 --process --jacknife
 else
  echo "wrong subevent number"
 fi
+echo "mv $tdir/${fname} ${OUT_DIR}/."
 mv $tdir/${fname} ${OUT_DIR}/.
 
 cd $IN_DIR

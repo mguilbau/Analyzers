@@ -357,19 +357,19 @@ namespace subsample
       LOG_S(INFO) << "Number of trees in the TChain: " << ch->GetNtrees();
       LOG_S(INFO) << "Maximum cumulant order to be computed: " << cumumaxorder;
 
-      int nbranches = ch->GetNbranches();
+      int nbranches = SetupBranchName(harm0, harm1, nsub).size();
       LOG_S(INFO) << "Number of branches in TTrees: "<< nbranches;
 
       //init vectors
       //  -- 2D vector correlator (numerator and denominator)
       std::vector < std::vector < std::vector< std::vector<double> > > > 
       qNM( nSubSamp,
-           std::vector< std::vector < std::vector<double> > > ( nbranches / 2,
+           std::vector< std::vector < std::vector<double> > > ( nbranches,
                                                                std::vector< std::vector<double> > ( binarray[nbins], 
                                                                                                     std::vector<double>(multmax, 0.) ) ) );
       std::vector < std::vector < std::vector< std::vector<double> > > > 
       wqNM( nSubSamp,
-            std::vector< std::vector < std::vector<double> > > ( nbranches / 2,
+            std::vector< std::vector < std::vector<double> > > ( nbranches,
                                                                  std::vector< std::vector<double> > ( binarray[nbins], 
                                                                                                       std::vector<double>(multmax, 0.) ) ) );
       // -- cumulant after multipilicity bin re-combination
@@ -593,7 +593,7 @@ namespace subsample
        {
           for(int j = 0; j < qNM[i].size(); ++j)
           {
-             for(int k = 0; k < qNM[i][j].size(); ++j)
+             for(int k = 0; k < qNM[i][j].size(); ++k)
              {
                 qNM[i][j][k].clear();
                 wqNM[i][j][k].clear();

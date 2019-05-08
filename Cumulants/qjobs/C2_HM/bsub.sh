@@ -2,8 +2,8 @@
 # https://twiki.cern.ch/twiki/bin/view/Main/BatchJobs#JobSub
 
 #jq=8nm
-jq=8nh
-#jq=1nd
+#jq=8nh
+jq=1nd
 #jq=2nd
 
 #echo $1

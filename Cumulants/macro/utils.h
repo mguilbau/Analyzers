@@ -170,13 +170,13 @@ namespace utils
       {
          if(!(ievt%10000000))
          {
-            std::cout << 
-            "\rievt = " << ievt 
-            <<
-            ", tree number = " << ch->GetTreeNumber()
-            <<
-            " ~~~> " << std::setprecision(3) << (static_cast<double>(ch->GetTreeNumber())/static_cast<double>(ntrees))*100.  << " %" 
-            << std::flush;
+            //std::cout << 
+            //"\rievt = " << ievt 
+            //<<
+            //", tree number = " << ch->GetTreeNumber()
+            //<<
+            //" ~~~> " << std::setprecision(3) << (static_cast<double>(ch->GetTreeNumber())/static_cast<double>(ntrees))*100.  << " %" 
+            //<< std::flush;
             //std::cout << 
             //"\rievt = " << ievt 
             //<<
@@ -240,12 +240,29 @@ namespace utils
          {
             for(unsigned int iref = 0; iref < static_cast<int>(qNM[iord][inoff].size()); ++iref)
             {
-               cumulant(qNM, wqNM, cNM, wcNM, iord, harm0, harm1, inoff, iref, nsub);
+               if(iref < 2 && 2*iord+2 >= 2)
+               {
+                  continue;
+               }
+               else if(iref < 4 && 2*iord+2 >= 4)
+               {
+                  continue;
+               }
+               else if(iref < 6 && 2*iord+2 >= 6)
+               {
+                  continue;
+               }
+               else if(iref < 8 && 2*iord+2 >= 8)
+               {
+                  continue;
+               }
+               else cumulant(qNM, wqNM, cNM, wcNM, iord, harm0, harm1, inoff, iref, nsub);
             }
          }
       }
 
       if(!quiet) LOG_S(INFO) << "Rebinning in larger N_{trk}_{offline} bins now";
+      LOG_S(INFO) << "SIZE cNM = " << cNM.size() << ", SIZE cNMreb = " << cNMreb.size();
       for(unsigned int iord = 0; iord < static_cast<unsigned int>(cNMreb.size()); ++iord)
       {
          int inoff = 0;
@@ -322,13 +339,43 @@ namespace utils
       {
          for(int ibin = 0; ibin < hcN[iord]->GetNbinsX(); ++ibin)
          {
-            hcN_num[iord]->SetBinContent(ibin+1, cNM[iord][ibin] * wcNM[iord][ibin]);
-            hcN_den[iord]->SetBinContent(ibin+1, wcNM[iord][ibin]);
+            if(ibin < 2 && iord >= 2) 
+            {
+               hcN_num[iord]->SetBinContent(ibin+1, 0.);
+               hcN_den[iord]->SetBinContent(ibin+1, 0.);
+               hcN[iord]->SetBinContent(ibin+1, 0.);
+               hvN[iord]->SetBinContent(ibin+1, 0.);
+            }
+            else if(ibin < 4 && iord >= 4) 
+            {
+               hcN_num[iord]->SetBinContent(ibin+1, 0.);
+               hcN_den[iord]->SetBinContent(ibin+1, 0.);
+               hcN[iord]->SetBinContent(ibin+1, 0.);
+               hvN[iord]->SetBinContent(ibin+1, 0.);
+            }
+            else if(ibin < 6 && iord >= 6) 
+            {
+               hcN_num[iord]->SetBinContent(ibin+1, 0.);
+               hcN_den[iord]->SetBinContent(ibin+1, 0.);
+               hcN[iord]->SetBinContent(ibin+1, 0.);
+               hvN[iord]->SetBinContent(ibin+1, 0.);
+            }
+            else if(ibin < 8 && iord >= 8) 
+            {
+               hcN_num[iord]->SetBinContent(ibin+1, 0.);
+               hcN_den[iord]->SetBinContent(ibin+1, 0.);
+               hcN[iord]->SetBinContent(ibin+1, 0.);
+               hvN[iord]->SetBinContent(ibin+1, 0.);
+            }
+            else{ 
+               hcN_num[iord]->SetBinContent(ibin+1, cNM[iord][ibin] * wcNM[iord][ibin]);
+               hcN_den[iord]->SetBinContent(ibin+1, wcNM[iord][ibin]);
 
-            if( cNM[iord][ibin] != 0. ) 
-               hcN[iord]->SetBinContent(ibin+1, cNM[iord][ibin]);
-            double vn = computeVn(iord, hcN[iord]->GetBinContent(ibin+1), nsub);
-            if( vn != 0. ) hvN[iord]->SetBinContent(ibin+1, vn);
+               if( cNM[iord][ibin] != 0. ) 
+                  hcN[iord]->SetBinContent(ibin+1, cNM[iord][ibin]);
+               double vn = computeVn(iord, hcN[iord]->GetBinContent(ibin+1), nsub);
+               if( vn != 0. ) hvN[iord]->SetBinContent(ibin+1, vn);
+            }
          }
 
          for(int ibin = 0; ibin < hcNreb[iord]->GetNbinsX(); ++ibin)
@@ -362,18 +409,19 @@ namespace utils
       //LOG_S(INFO) << "Number of events: " << ch->GetEntries();
       LOG_S(INFO) << "Maximum cumulant order to be computed: " << cumumaxorder;
 
-      //int nbranches = ch->GetNbranches();
-      int nbranches = 10;
+      //int nbranches = ch->GetNbranches() - 4;
+      int nbranches = SetupBranchName(harm0, harm1, nsub).size();
+      //int nbranches = 10;
       LOG_S(INFO) << "Number of branches in TTrees: "<< nbranches;
 
       //init vectors
       //  -- 2D vector correlator (numerator and denominator)
       std::vector < std::vector< std::vector<double> > >  
-      qNM( nbranches / 2,
+      qNM( nbranches,
            std::vector< std::vector<double> > ( binarray[nbins], 
                                                 std::vector<double>(multmax, 0.) ) );
       std::vector < std::vector< std::vector<double> > >  
-      wqNM( nbranches / 2,
+      wqNM( nbranches,
             std::vector< std::vector<double> > ( binarray[nbins], 
                                                  std::vector<double>(multmax, 0.) ) );
 
