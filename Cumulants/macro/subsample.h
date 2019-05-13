@@ -330,14 +330,28 @@ namespace subsample
          {
             for(int inoff = 0; inoff < cNM[itest][iord].size(); ++inoff)
             {
-                 cNMvar[iord][inoff] += TMath::Power(cNM[itest][iord][inoff] - hcN[iord]->GetBinContent(inoff+1), 2);
+                 cNMvar[iord][inoff] += TMath::Power(cNM[itest][iord][inoff] - hcN[iord]->GetBinContent(inoff+1), 2)/((double) cNM.size()-1);
             }
             for(int ibin = 0; ibin < cNMreb[itest][iord].size(); ++ibin)
             {
-                 cNMvarreb[iord][ibin] += TMath::Power(cNMreb[itest][iord][ibin] - hcNreb[iord]->GetBinContent(ibin+1), 2);
+                 cNMvarreb[iord][ibin] += TMath::Power(cNMreb[itest][iord][ibin] - hcNreb[iord]->GetBinContent(ibin+1), 2)/((double) cNM.size()-1);
             }
          }
+
       }
+
+         for(int iord = 0; iord < cNM[0].size(); ++iord)
+         {
+            LOG_S(INFO) << "iord == " << iord;
+            for(int ibin = 0; ibin < cNMreb[0][iord].size(); ++ibin)
+            {
+                LOG_S(INFO) << "ibin == " << ibin << ",  VALUE == " << hcNreb[iord]->GetBinContent(ibin+1);
+                for(int itest = 0; itest < cNM.size(); ++itest)
+                {
+                    LOG_S(INFO) << "itest == " << itest << "  cNM == " << cNMreb[itest][iord][ibin];
+                }
+            } 
+         }
    } 
 
    //___________________________________________________
@@ -572,7 +586,8 @@ namespace subsample
               hcNreb[iord]->SetBinError(ibin+1, 0.*hcNreb[iord]->GetBinContent(ibin+1));
               hvNreb[iord]->SetBinError(ibin+1, 0.*hvNreb[iord]->GetBinContent(ibin+1));
            }
-           LOG_S(INFO) << ibin;
+           LOG_S(INFO) << ibin << " " << iord;
+           LOG_S(INFO) << hcNreb[iord]->GetBinContent(ibin+1) << " +- " << hcNreb[iord]->GetBinError(ibin+1);
         }
       }
 
